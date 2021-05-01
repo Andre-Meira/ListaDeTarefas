@@ -1,0 +1,31 @@
+﻿@model ListaDeTarefas.Models.User
+@{
+    ViewData["Title"] = "Novo Usuario";
+}
+
+<h1>Novo Usuario</h1>
+
+<form asp-action="NovoUser" method="post">
+    <div class="form-group">
+        <label asp-for="Usuario" class="control-label">Tarefa</label>
+        <input asp-for="Usuario" class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Senha" class="control-label">Descricao</label>
+        <input asp-for="Senha" class="form-control">
+    </div>
+
+
+    <input type="submit" value="Salvar" class="btn" />
+</form>
+
+<a asp-action="Index" class="btn btn-lik">Voltar</a>
+
+
+@if (ViewBag.Alerta != null)
+{
+    <script type="text/javascript">
+        alert('@ViewBag.Alerta');
+    </script>
+}

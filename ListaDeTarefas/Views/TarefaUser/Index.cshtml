@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ListaDeTarefas.Models.Tarefa>
+@{
+    var id = ViewData["id"];
+}
+
+
+<h2>Listagem de Tarefas</h2>
+
+<div class="container">
+    <form asp-controller="TarefaUser" asp-action="Index" method="get">
+        <div>
+
+            <select name="situacao">
+                <option value=1>Ativo</option>
+                <option value=0>Inativo</option>
+            </select>
+
+            <input type="submit">
+        </div>
+    </form>
+
+    <table class="table">
+        <thead>
+        <th>
+            @id
+            
+        </th>
+        <th>
+            Descrição
+        </th>
+        <th>
+            Inico
+        </th>
+        <th>
+            Fim
+        </th>
+        <th>
+            Situacao
+        </th>
+        <th>
+            Prioridade
+        </th>
+        <th></th>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(ModelItem => item.NomeTarefa)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(ModelItem => item.Descricao)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(ModelItem => item.Inicio.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(ModelItem => item.Fim.Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(ModelItem => item.DescricaoStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(ModelItem => item.DescricaoPrioridade)
+                    </td>
+                    @*  *@
+                    <td>
+                        <a asp-action="AtulizarTarefas" asp-route-id="@item.TarefasId" class="btn btn-info">Atualizar</a>
+                        <a asp-action="ExcluirTarefa" asp-route-id="@item.TarefasId" class="btn btn-danger">Excluir</a>
+                        
+                    </td>
+                </tr>
+
+
+            }
+        </tbody>
+    </table>
+</div>
+
+<a asp-action="NovaTarefa" asp-route-id="@id"  class="btn btn-primary">Nova Tarefa</a>
