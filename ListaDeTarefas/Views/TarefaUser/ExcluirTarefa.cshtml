@@ -1,0 +1,21 @@
+﻿@model ListaDeTarefas.Models.Tarefa
+
+@{
+    var idTarefa = ViewData["idTarefa"];
+}
+
+<h2>Excluir</h2>
+
+<div class="row">
+    @Html.DisplayFor(Model => Model.TarefasId)
+    @Html.DisplayFor(Model => Model.NomeTarefa)
+    @Html.DisplayFor(Model => Model.Descricao)
+    @Html.DisplayFor(Model => Model.Inicio)
+    @Html.DisplayFor(Model => Model.Fim)
+    @Html.DisplayFor(Model => Model.Situacao)
+</div>
+
+<form asp-action="ExcluirTarefa" method="post">
+    <input type="hidden" asp-for="@idTarefa" />
+    <input type="submit" value="ConfirmExclusaoTarefa"  class="btn btn-danger" />
+</form>

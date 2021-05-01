@@ -1,0 +1,57 @@
+﻿@model ListaDeTarefas.Models.Tarefa
+
+@{
+}
+
+
+<h2>Atulizar Tarefa</h2>
+
+<div class="row">
+    <div>
+        <form asp-action="AtualizarTarefas" method="post">
+            <input type="hidden" asp-for="TarefasId" />
+            <input type="hidden" asp-for="FkUserTarefa">
+            <div class="form-group">
+                <label asp-for="NomeTarefa" class="control-label">Tarefa</label>
+                <input asp-for="NomeTarefa" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Descricao" class="control-label">Descricao</label>
+                <input asp-for="Descricao" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Inicio" class="control-label">Inicio</label>
+                <input asp-for="Inicio" id="DataInicio" type="date" class="form-control">
+                <script></script>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Fim" class="control-label">Fim</label>
+                <input asp-for="Fim" type="date" id="DataFinal" class="form-control">
+            </div>
+
+            <div class="form-group">
+                <select name="situacao" class="form-control">
+                    <option value=1>Ativo</option>
+                    <option value=0>Inativo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select name="Prioridade" class="form-control">
+                    <option value=1>Alta</option>
+                    <option value=0>Baixa</option>
+                </select>
+            </div>
+
+            <input type="submit" value="Atulizar" class="btn btn-info" />
+
+        </form>
+
+        <a asp-action="Index" class="btn btn-link">Voltar</a>
+
+    </div>
+
+</div>

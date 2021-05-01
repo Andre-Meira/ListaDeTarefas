@@ -28,13 +28,17 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Situacao" class="control-label">Situacao</label>
-        <input asp-for="Situacao" class="form-control">
+        <select name="situacao" class="form-control">
+            <option value=1>Ativo</option>
+            <option value=0>Inativo</option>
+        </select>
     </div>
 
     <div class="form-group">
-        <label asp-for="Prioridade" class="control-label">Situacao</label>
-        <input asp-for="Prioridade" class="form-control">
+        <select name="Prioridade" class="form-control">
+            <option value=1>Alta</option>
+            <option value=0>Baixa</option>
+        </select>
     </div>
 
     <div class="form-group">

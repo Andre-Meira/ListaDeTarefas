@@ -48,7 +48,7 @@ namespace ListaDeTarefas
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}/{UserName?}/{Senha?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}/{idTarefa?}");
                 
 
             });

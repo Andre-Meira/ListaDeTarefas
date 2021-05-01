@@ -1,29 +1,26 @@
 ﻿@model IEnumerable<ListaDeTarefas.Models.Tarefa>
 @{
     var id = ViewData["id"];
+    var user = ViewData["User"];
 }
 
 
-<h2>Listagem de Tarefas</h2>
+<h2>Suas Tarefas @user </h2>
 
 <div class="container">
     <form asp-controller="TarefaUser" asp-action="Index" method="get">
-        <div>
-
-            <select name="situacao">
+        <div class="control-label">
+            <select name="situacao" class="control-label">
                 <option value=1>Ativo</option>
                 <option value=0>Inativo</option>
             </select>
-
             <input type="submit">
         </div>
     </form>
-
     <table class="table">
         <thead>
         <th>
-            @id
-            
+            nome            
         </th>
         <th>
             Descrição
@@ -66,8 +63,8 @@
                     </td>
                     @*  *@
                     <td>
-                        <a asp-action="AtulizarTarefas" asp-route-id="@item.TarefasId" class="btn btn-info">Atualizar</a>
-                        <a asp-action="ExcluirTarefa" asp-route-id="@item.TarefasId" class="btn btn-danger">Excluir</a>
+                        <a asp-action="AtualizarTarefas"  asp-route-id="@id" asp-route-idTarefa="@item.TarefasId"class="btn btn-info">Atualizar</a>
+                        <a asp-action="ExcluirTarefa" asp-route-id="@id"  asp-route-idTarefa="@item.TarefasId" class="btn btn-danger">Excluir</a>
                         
                     </td>
                 </tr>

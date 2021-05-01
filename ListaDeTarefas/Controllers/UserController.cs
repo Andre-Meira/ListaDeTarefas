@@ -22,7 +22,7 @@ namespace ListaDeTarefas.Controllers
             return View();
         }
 
-        [HttpGet]
+        [HttpGet("/User/VerificaUser/{UserName?}/{Senha?}")]
         //Faz a Vereficação se Valido Redireciona a Action passando o paramentro ID
         public IActionResult VerificaUser(string UserName, string Senha) 
         {
