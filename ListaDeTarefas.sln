@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ListaDeTarefas", "ListaDeTarefas\ListaDeTarefas.csproj", "{A89508A5-6AD5-497B-87D1-8908AA6ABB88}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ListaDeTarefas", "ListaDeTarefas\ListaDeTarefas.csproj", "{A89508A5-6AD5-497B-87D1-8908AA6ABB88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

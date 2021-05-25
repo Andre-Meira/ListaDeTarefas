@@ -1,30 +1,40 @@
 ﻿using ListaDeTarefas.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Threading.Tasks;
-using ListaDeTarefas.Controllers;
 
 namespace ListaDeTarefas.Controllers
 {
     public class TarefaUserController : Controller
     {
         private readonly ListaTarefaDBContext _context;
+
         public TarefaUserController(ListaTarefaDBContext context)
         {
             _context = context;
         }
-        [HttpGet("/TarefaUser/{id}/{situacao?}")]
-        public IActionResult Index(int id, int? situacao)
+
+        [HttpGet("/TarefaUser/{id}/{situacao?}/{prioridade?}")]
+        public IActionResult Index(int id, int? situacao, int? prioridade)
         {
             var TarefaPorUsuario = _context.Tarefas.Where(t => t.FkUserTarefa == id);
             ViewData["id"] = id;
             ViewData["User"] = _context.Users.Find(id).Usuario;
-            if (situacao != null)
-            {               
-                return View(_context.Tarefas.Where(x => x.Situacao == situacao && x.FkUserTarefa == id));
+
+            //Faz a verificação de dois Filtro
+            if (situacao != null && prioridade != null)
+            {       
+                return View(_context.Tarefas.Where(
+                    table => (table.Prioridade == prioridade && table.Situacao == situacao && table.FkUserTarefa == id)));
             }
+
+            //Faz a verifica de um Filtro
+            if (situacao != null || prioridade != null)
+            {
+                return View(_context.Tarefas.Where(
+                    table => (table.Prioridade == prioridade || table.Situacao == situacao && table.FkUserTarefa == id)));
+            }
+
             return View(TarefaPorUsuario) ;
         }
 
@@ -48,7 +58,6 @@ namespace ListaDeTarefas.Controllers
             return NotFound();
         }
 
-
         [HttpGet("/TarefaUser/AtualizarTarefas/{id?}/{idTarefa?}")]
         public IActionResult AtualizarTarefas(int id, int idTarefa) 
         {
@@ -60,17 +69,30 @@ namespace ListaDeTarefas.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult AtualizarTarefas(int id, int idTarefa, Tarefa tarefa) 
+        public IActionResult AtualizarTarefas(int id, Tarefa tarefa) 
         {
             if (ModelState.IsValid)
             {
-                _context.Tarefas.Update(tarefa);
-                _context.SaveChanges();
-                return RedirectToAction("Index", new { id });
+                try
+                {
+                    _context.Tarefas.Update(tarefa);
+                    _context.SaveChanges();
+                    return RedirectToAction("Index", new { id });
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TarefaExist(tarefa.TarefasId))
+                    {
+                        return NotFound();
+                    }
+                    else 
+                    {
+                        throw;
+                    }
+                }                
             }
             return View();
         }
-
 
 		[HttpGet("/TarefaUser/ExcluirTarefa/{id}/{idTarefa}")]
 		public IActionResult ExcluirTarefa(int id, int idTarefa)
@@ -79,7 +101,6 @@ namespace ListaDeTarefas.Controllers
             ViewData["idTarefa"] = confirm.TarefasId;
 			return View(confirm);
 		}
-
 
 		[HttpPost, ActionName("ExcluirTarefa")]
 		[ValidateAntiForgeryToken]
@@ -101,6 +122,10 @@ namespace ListaDeTarefas.Controllers
             return NotFound();
 		}
 
-	}
+        private bool TarefaExist(int id)
+        {
+            return _context.Tarefas.Any(e => e.TarefasId == id);
+        }
+    }
 }
 

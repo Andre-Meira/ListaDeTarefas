@@ -1,20 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using ListaDeTarefas.Models;
-using System.Diagnostics;
 
 namespace ListaDeTarefas.Controllers
 {
     public class UserController : Controller
     {
-
         private readonly ListaTarefaDBContext _context;
-        public UserController(ListaTarefaDBContext context)
-        {
+        private readonly CryptographyHash _cryptography;
+
+        public UserController(ListaTarefaDBContext context, CryptographyHash cryptography)
+        {   
             _context = context;
+            _cryptography = cryptography;
         }
 
         public IActionResult Index()
@@ -23,26 +22,21 @@ namespace ListaDeTarefas.Controllers
         }
 
         [HttpGet("/User/VerificaUser/{UserName?}/{Senha?}")]
-        //Faz a Vereficação se Valido Redireciona a Action passando o paramentro ID
-        public IActionResult VerificaUser(string UserName, string Senha) 
+        public IActionResult VerificaUser(string UserName, string Senha)
         {
-            if (!String.IsNullOrEmpty(UserName) && !String.IsNullOrEmpty(Senha)) 
+            if (!String.IsNullOrEmpty(UserName) && !String.IsNullOrEmpty(Senha))
             {
-                var validUser = _context.Users.Where(x => x.Usuario == UserName && x.Senha == Senha).FirstOrDefault();
-                if (validUser == null)
-                {
-                    ViewBag.alerta = "Erro";
+                var UserChecked = CheckUserExist(UserName, Senha);
+                if (UserChecked == null)
                     return View();
-                }             
-                return RedirectToAction("Index", "TarefaUser", new { id = validUser.IdUser });
-            }          
-            return View();
+                return RedirectToAction("Index", "TarefaUser", new { id = UserChecked.IdUser });
+            }            
+            return View();            
         }
 
         [HttpGet]
         public IActionResult NovoUser() 
         {
-
             return View();
         }
 
@@ -51,20 +45,44 @@ namespace ListaDeTarefas.Controllers
         public IActionResult NovoUser(User user) 
         {
             if (ModelState.IsValid) 
-            {
-                var verificaUserExiste = _context.Users.Where(u => u.Usuario == user.Usuario).FirstOrDefault();
-                if (verificaUserExiste == null) 
+            {              
+                string[] getUserArray = {user.Usuario};
+                string[] getSenhaArray = {user.Senha};
+                bool isUserVerificed = isCheckUserPattern(getUserArray, getSenhaArray);
+                User UserChecked = CheckUserExist(user.Usuario);
+
+                if (!isUserVerificed )
                 {
-                    _context.Users.Add(user);
-                    _context.SaveChanges();
-                    return RedirectToAction("index", "User");
+                    if (UserChecked == null)
+                    {
+                        _context.Entry(user).Property(u => u.Senha).CurrentValue = _cryptography.CriptografarSenha(user.Senha);
+                        _context.Users.Add(user);
+                        _context.SaveChanges();
+                        return RedirectToAction("Index", "TarefaUser", new {id = user.IdUser});
+                    }
+                    else
+                    { ViewBag.alerta = "Esse Usuario Ja Existe!!";}
                 }
-                ViewBag.alerta = "Esse Usuario Ja Existe!!";
-                return View();
+                else
+                { ViewBag.alerta = "Erro!! Senha ou Usuario nao e valido!!"; }                                     
             }
             return View();
         }
 
-    
+        private User CheckUserExist(string name) 
+        {
+            return _context.Users.Where(x => x.Usuario == name).FirstOrDefault();
+        }
+        private User CheckUserExist(string name, string senha)
+        {
+            return _context.Users.Where(x => x.Usuario == name && x.Senha == senha).FirstOrDefault();
+        }
+        private bool isCheckUserPattern(string[] user, string[] senha) 
+        {
+            int MinOfWords = 3;
+            bool isValidUser = Array.Exists(user, element => element.Length > MinOfWords);
+            bool isValidPassword = Array.Exists(senha, element => element.Length > MinOfWords && element.StartsWith(element.ToUpper()));
+            return isValidPassword == isValidUser;
+        }     
     }
 }
