@@ -16,17 +16,26 @@ namespace ListaDeTarefas.Controllers
             _cryptography = cryptography;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
 
-        [HttpGet("/User/VerificaUser/{UserName?}/{Senha?}")]
+        [HttpGet]
+        public IActionResult VerificaUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult VerificaUser(string UserName, string Senha)
         {
             if (!String.IsNullOrEmpty(UserName) && !String.IsNullOrEmpty(Senha))
             {
-                var UserChecked = CheckUserExist(UserName, Senha);
+                var SenhaCryptda = _cryptography.CriptografarSenha(Senha);
+                var UserChecked = CheckUserExist(UserName, SenhaCryptda);
                 if (UserChecked == null)
                     return View();
                 return RedirectToAction("Index", "TarefaUser", new { id = UserChecked.IdUser });
@@ -41,17 +50,17 @@ namespace ListaDeTarefas.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]       
         public IActionResult NovoUser(User user) 
         {
             if (ModelState.IsValid) 
             {              
-                string[] getUserArray = {user.Usuario};
+                string[] getUserArray = {user.Usuario};               
                 string[] getSenhaArray = {user.Senha};
                 bool isUserVerificed = isCheckUserPattern(getUserArray, getSenhaArray);
                 User UserChecked = CheckUserExist(user.Usuario);
 
-                if (!isUserVerificed )
+                if (!isUserVerificed)
                 {
                     if (UserChecked == null)
                     {
@@ -61,10 +70,10 @@ namespace ListaDeTarefas.Controllers
                         return RedirectToAction("Index", "TarefaUser", new {id = user.IdUser});
                     }
                     else
-                    { ViewBag.alerta = "Esse Usuario Ja Existe!!";}
+                        {ViewBag.alerta = "Esse Usuario Ja Existe!!";}
                 }
                 else
-                { ViewBag.alerta = "Erro!! Senha ou Usuario nao e valido!!"; }                                     
+                    { ViewBag.alerta = "Erro!! Senha ou Usuario nao e valido!!"; }                                     
             }
             return View();
         }

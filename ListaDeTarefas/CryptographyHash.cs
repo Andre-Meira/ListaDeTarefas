@@ -7,7 +7,6 @@ namespace ListaDeTarefas
 {
     public class CryptographyHash 
     {        
-
         public string CriptografarSenha(string senha)
         {
             SHA512 _algorithm = SHA512.Create();
@@ -23,24 +22,5 @@ namespace ListaDeTarefas
 
             return sb.ToString();
         }
-
-        public bool isCheckPassWord(string senha, string senhaCadastrada)
-        {
-            SHA512 _algorithm = SHA512.Create();
-
-            if (String.IsNullOrEmpty(senhaCadastrada))
-                throw new NullReferenceException("Cadastre uma senha");
-
-            byte[] encrySenha = _algorithm.ComputeHash(Encoding.UTF8.GetBytes(senha));
-            var sb = new StringBuilder();
-
-            foreach (var x in encrySenha)
-            {
-                sb.Append(x.ToString("X2"));
-            }
-
-            return sb.ToString() == senhaCadastrada;
-        }
-
     }
 }

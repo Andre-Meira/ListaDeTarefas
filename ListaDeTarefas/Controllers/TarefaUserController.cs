@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ListaDeTarefas.Controllers
 {
@@ -15,26 +16,19 @@ namespace ListaDeTarefas.Controllers
         }
 
         [HttpGet("/TarefaUser/{id}/{situacao?}/{prioridade?}")]
-        public IActionResult Index(int id, int? situacao, int? prioridade)
+        public async  Task<IActionResult> Index(int id, int? situacao, int? prioridade)
         {
-            var TarefaPorUsuario = _context.Tarefas.Where(t => t.FkUserTarefa == id);
-            ViewData["id"] = id;
-            ViewData["User"] = _context.Users.Find(id).Usuario;
-
-            //Faz a verificação de dois Filtro
+            var TarefaPorUsuario = _context.Tarefas.Where(t => t.FkUserTarefa == id);         
             if (situacao != null && prioridade != null)
             {       
                 return View(_context.Tarefas.Where(
-                    table => (table.Prioridade == prioridade && table.Situacao == situacao && table.FkUserTarefa == id)));
+                    table => ((table.Prioridade == prioridade && table.Situacao == situacao) && (table.FkUserTarefa == id))));
             }
-
-            //Faz a verifica de um Filtro
             if (situacao != null || prioridade != null)
             {
                 return View(_context.Tarefas.Where(
-                    table => (table.Prioridade == prioridade || table.Situacao == situacao && table.FkUserTarefa == id)));
+                    table => ((table.Prioridade == prioridade || table.Situacao == situacao) && (table.FkUserTarefa == id))));
             }
-
             return View(TarefaPorUsuario) ;
         }
 
@@ -61,7 +55,6 @@ namespace ListaDeTarefas.Controllers
         [HttpGet("/TarefaUser/AtualizarTarefas/{id?}/{idTarefa?}")]
         public IActionResult AtualizarTarefas(int id, int idTarefa) 
         {
-
             var tarefa = _context.Tarefas.Where(t => t.TarefasId == idTarefa && t.FkUserTarefa == id).FirstOrDefault();
             ViewData["idTarefa"] = tarefa.TarefasId;
             return View(tarefa);
@@ -106,7 +99,6 @@ namespace ListaDeTarefas.Controllers
 		[ValidateAntiForgeryToken]
 		public IActionResult ConfirmExclusaoTarefa(int id, int idTarefa)
 		{
-
 			if (ModelState.IsValid)
 			{
                 var confirm = _context.Tarefas.FirstOrDefault(x => x.TarefasId == idTarefa && x.FkUserTarefa == id);

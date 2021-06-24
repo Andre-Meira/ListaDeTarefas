@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Security.Cryptography;
 
 namespace ListaDeTarefas
 {
@@ -21,7 +20,7 @@ namespace ListaDeTarefas
 		{
 			services.AddControllersWithViews();
 			services.AddDbContext<ListaTarefaDBContext>(opcoes => opcoes.UseSqlServer(Configuration.GetConnectionString("ConexaoBD")));
-			services.AddTransient<CryptographyHash>();
+			services.AddScoped<CryptographyHash>();		
 		}
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{

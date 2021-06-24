@@ -1,23 +1,19 @@
 ﻿@model IEnumerable<ListaDeTarefas.Models.Tarefa>
 @{
     var id = ViewData["id"];
-    var user = ViewData["User"];
 }
-
-
-<h2>Suas Tarefas "@user"</h2>
 
 <div class="container">
     <form asp-controller="TarefaUser" asp-action="Index" method="get">
         <div class="control-label">
-            
+
             <select name="situacao" class="control-label">
                 <option value=""></option>
                 <option value=1>Ativo</option>
                 <option value=0>Inativo</option>
             </select>
 
-            <select name="Prioridade" class="control-label">
+            <select name="prioridade" class="control-label">
                 <option value=""></option>>
                 <option value=1>Alta</option>
                 <option value=0>Baixa</option>
@@ -29,6 +25,9 @@
     <table class="table">
         <thead>
             <tr>
+                <th>
+                    id
+                </th>
                 <th>
                     Nome
                 </th>
@@ -46,7 +45,7 @@
                 </th>
                 <th>
                     Prioridade
-                </th>              
+                </th>
                 <th></th>
             </tr>
         </thead>
@@ -54,6 +53,9 @@
             @foreach (var item in Model)
             {
                 <tr>
+                    <td>
+                        @id
+                    </td>
                     <td>
                         @Html.DisplayFor(ModelItem => item.NomeTarefa)
                     </td>
@@ -71,11 +73,11 @@
                     </td>
                     <td>
                         @Html.DisplayFor(ModelItem => item.DescricaoPrioridade)
-                    </td>                    
+                    </td>
                     <td>
-                        <a asp-action="AtualizarTarefas"  asp-route-id="@id" asp-route-idTarefa="@item.TarefasId"class="btn btn-info">Atualizar</a>
-                        <a asp-action="ExcluirTarefa" asp-route-id="@id"  asp-route-idTarefa="@item.TarefasId" class="btn btn-danger">Excluir</a>
-                        
+                        <a asp-action="AtualizarTarefas" asp-route-id="@item.FkUserTarefa" asp-route-idTarefa="@item.TarefasId" class="btn btn-info">Atualizar</a>
+                        <a asp-action="ExcluirTarefa" asp-route-id="@item.FkUserTarefa" asp-route-idTarefa="@item.TarefasId" class="btn btn-danger">Excluir</a>
+
                     </td>
                 </tr>
 
@@ -85,4 +87,8 @@
     </table>
 </div>
 
-<a asp-action="NovaTarefa" asp-route-id="@id"  class="btn btn-primary">Nova Tarefa</a>
+@foreach (var item in Model) 
+{
+    <a asp-action="NovaTarefa" asp-route-id="@item.FkUserTarefa" class="btn btn-primary">Nova Tarefa</a>
+}
+    

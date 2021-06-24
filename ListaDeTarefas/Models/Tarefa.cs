@@ -15,6 +15,7 @@ namespace ListaDeTarefas.Models
         public DateTime Fim { get; set; }
         public int Situacao { get; set; }
         public int Prioridade { get; set; }
+      
 
         public string DescricaoStatus => Situacao == 1 ? "Ativo" : "Inativo";
 
